@@ -1,1 +1,49 @@
 
+** What is CSRF? How does Rails protect against it?**
+ CSRF stands for Cross-Site Request Forgery. This is a situation where attacker submits a form or fill sensitive informations on the 
+victim user behalf. Probably to get access to confidential details.
+When a user recently logged-in to the particluar site,the attacker request will appear to be from the actual user.
+
+Rails protect againt CSRF by including a security feature called protect_from_forgery,it is enabled by default in every new rails application.
+It helps to prevent CSRF attacks by adding a unique token to each form in the application and it also stored in the user's session.
+
+This is how it works - 
+<form action="/update_email" method="post">
+  <input type="hidden" name="authenticity_token" value="random_token_here">
+  <input type="email" name="email">
+  <input type="submit" value="Update Email">
+</form>
+
+To disable CSRF protection for a specific action or controller. We can use
+
+class ApiController < ApplicationController
+  skip_before_action :verify_authenticity_token, only: [:update_email]
+
+  def update_email
+    # Your code here
+  end
+end
+
+*** Customizing the CSRF Token ***
+By default, Rails uses a secure random value for the CSRF token. However, you may want to use your own token generation logic. To do this, you can override the form_authenticity_token method in your ApplicationController. Here's an example of how to generate a custom token:
+
+class ApplicationController < ActionController::Base
+  protect_from_forgery with: :exception
+
+  private
+
+  def form_authenticity_token
+    # Your custom token generation logic here
+  end
+end
+
+*** Handling Invalid CSRF Tokens ***
+When Rails receives a request with an invalid or missing CSRF token, it raises an ActionController::InvalidAuthenticityToken exception by default. You can customize how your application responds to invalid tokens by rescuing this exception in your ApplicationController. Here's an example of how to handle invalid CSRF tokens:
+
+class ApplicationController < ActionController::Base
+  protect_from_forgery with: :exception
+
+  rescue_from ActionController::InvalidAuthenticityToken do |exception|
+    # Your custom response to invalid tokens here
+  end
+end
