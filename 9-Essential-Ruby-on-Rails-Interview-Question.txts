@@ -1,5 +1,5 @@
 
-** What is CSRF? How does Rails protect against it?**
+** What is CSRF? How does Rails protect against it? **
  CSRF stands for Cross-Site Request Forgery. This is a situation where attacker submits a form or fill sensitive informations on the 
 victim user behalf. Probably to get access to confidential details.
 When a user recently logged-in to the particluar site,the attacker request will appear to be from the actual user.
